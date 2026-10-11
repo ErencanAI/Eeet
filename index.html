@@ -1,0 +1,829 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080d18">
+<meta name="description" content="PhoneRescue Ultra: Çok markalı telefon ön tanılama, kurtarma rehberi ve raporlama merkezi.">
+<title>PhoneRescue Ultra | Device Recovery Center</title>
+<style>
+:root{
+ --bg:#080d18;--panel:#101a2a;--panel2:#0c1422;--line:#243650;
+ --text:#edf4ff;--muted:#91a4be;--blue:#63a7ff;--purple:#8b7bff;
+ --green:#4ee0b0;--orange:#ffca78;--red:#ff7d8a;
+ --radius:18px;--shadow:0 18px 50px #0003
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;min-height:100vh;background:
+ radial-gradient(ellipse at 80% -15%,#1b3760 0,transparent 42%),
+ radial-gradient(ellipse at -15% 45%,#171a42 0,transparent 35%),var(--bg);
+ color:var(--text);font:14px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+ outline:2px solid var(--blue);outline-offset:3px
+}
+a{color:#9bc8ff;text-decoration:none}
+a:hover{text-decoration:underline}
+.topbar{
+ position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);
+ background:#080d18df;border-bottom:1px solid #23334a
+}
+.topinner{
+ max-width:1200px;margin:auto;padding:13px 20px;display:flex;
+ justify-content:space-between;align-items:center;gap:14px
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{
+ width:43px;height:43px;display:grid;place-items:center;flex-shrink:0;
+ border-radius:14px;background:linear-gradient(140deg,#4297ff,#7951ec);
+ font-size:23px;box-shadow:0 8px 30px #438bff35
+}
+.brand h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:-.5px}
+.brand small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.topright{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pill{
+ display:inline-flex;align-items:center;gap:7px;padding:6px 10px;
+ border:1px solid var(--line);border-radius:30px;font-size:11px;color:var(--muted)
+}
+.dot{width:7px;height:7px;border-radius:50%;background:#71839b;display:inline-block}
+.dot.green{background:var(--green);box-shadow:0 0 9px #4ee0b077}
+.dot.red{background:var(--red)}
+main{max-width:1200px;margin:auto;padding:25px 20px 55px}
+.hero{
+ border:1px solid #304a6a;border-radius:25px;overflow:hidden;
+ background:linear-gradient(115deg,#142945ed,#10162bed 60%,#221b43dd);
+ padding:clamp(22px,5vw,43px);position:relative;box-shadow:var(--shadow)
+}
+.hero:after{
+ content:"";position:absolute;width:260px;height:260px;border-radius:50%;
+ right:-70px;top:-120px;border:1px solid #7fb4ff22;
+ box-shadow:0 0 0 35px #7fb4ff08,0 0 0 70px #7fb4ff05;pointer-events:none
+}
+.eyebrow{color:#a7caff;font-size:11px;letter-spacing:2px;font-weight:800}
+.hero h2{font-size:clamp(28px,5vw,44px);letter-spacing:-1.7px;line-height:1.1;margin:12px 0}
+.hero p{max-width:650px;color:#afc2dc;margin:0;line-height:1.8}
+.heroactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{
+ display:inline-flex;justify-content:center;align-items:center;gap:8px;
+ padding:11px 15px;border:1px solid #344d6a;border-radius:11px;
+ background:#17273b;color:var(--text);font-weight:700;transition:.2s
+}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn.primary{border:0;background:linear-gradient(105deg,#347fff,#7054ef);box-shadow:0 8px 22px #3f70ff25}
+.btn.success{border-color:#285d54;background:#12352f}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:20px;margin-top:20px}
+.sidebar{align-self:start;position:sticky;top:85px}
+.navbox,.card{
+ background:linear-gradient(145deg,#111c2c,#0c1422);
+ border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 10px 30px #0001
+}
+.navbox{padding:13px}
+.navtitle{padding:8px 10px;color:#6f86a4;font-size:10px;font-weight:800;letter-spacing:1.5px}
+.navlink{
+ display:flex;gap:11px;align-items:center;padding:11px 10px;
+ border-radius:10px;color:#a8bbd5;font-weight:650;margin:2px 0
+}
+.navlink:hover,.navlink.active{background:#203754;color:white;text-decoration:none}
+.navlink .ico{width:23px;text-align:center;font-size:16px}
+.sideinfo{padding:15px;color:var(--muted);font-size:12px;line-height:1.7}
+.content{min-width:0}
+.card{padding:21px;margin-bottom:17px;scroll-margin-top:90px}
+.cardhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:17px}
+.cardhead h3{margin:0;font-size:17px;letter-spacing:-.3px}
+.cardhead p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.step{font-size:10px;color:#b8d5ff;background:#1a304b;padding:5px 8px;border-radius:7px;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:17px}
+.stat{border:1px solid var(--line);background:#0d1726;border-radius:14px;padding:15px;min-width:0}
+.statlabel{font-size:11px;color:var(--muted)}
+.statvalue{font-size:19px;font-weight:800;letter-spacing:-.4px;margin:7px 0 3px;overflow-wrap:anywhere}
+.statdesc{font-size:10px;color:#7289a5}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label{font-size:12px;font-weight:750;color:#c6d6e9}
+input,select,textarea{
+ width:100%;min-width:0;background:#091321;color:var(--text);
+ border:1px solid #2a405b;border-radius:10px;padding:12px
+}
+select{appearance:auto}
+textarea{resize:vertical;min-height:95px}
+input::placeholder,textarea::placeholder{color:#61758f}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.full{grid-column:1/-1}
+.help{font-size:11px;color:var(--muted);line-height:1.6}
+.choicegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.choice{
+ text-align:left;padding:14px 12px;background:#0b1524;border:1px solid var(--line);
+ border-radius:13px;color:var(--text);min-width:0
+}
+.choice strong{display:block;font-size:12px;margin-bottom:5px}
+.choice span{font-size:11px;color:var(--muted)}
+.choice.selected{border-color:#619dff;background:#152a46;box-shadow:inset 0 0 0 1px #619dff35}
+.choice .ci{font-size:22px;display:block;margin-bottom:10px}
+.devicegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.device{
+ padding:13px 12px;text-align:left;background:#0a1422;color:var(--text);
+ border:1px solid var(--line);border-radius:12px;min-width:0
+}
+.device:hover{border-color:#608dcc}
+.device.active{border-color:var(--blue);background:#162b46}
+.device .brandicon{font-size:21px;margin-bottom:8px}
+.device strong{font-size:12px;display:block}
+.device small{color:var(--muted);font-size:10px;display:block;margin-top:4px}
+.statusbox{
+ padding:13px 14px;border:1px solid #28425d;border-radius:12px;
+ background:#0a1524;display:flex;align-items:flex-start;gap:10px
+}
+.statusbox p{margin:0;font-size:12px;color:#a6bad3;line-height:1.7}
+.notice{
+ padding:13px 14px;border-radius:12px;border:1px solid #594c31;
+ background:#251f15;color:#e9d7ad;font-size:12px;line-height:1.7
+}
+.notice.blue{border-color:#29486c;background:#101f33;color:#b9d8ff}
+.notice.red{border-color:#5d343c;background:#29171d;color:#ffc0c7}
+.result{display:none;margin-top:18px}
+.result.show{display:block}
+.resulthead{padding:16px;background:#112c2a;border:1px solid #28544c;border-radius:13px;margin-bottom:13px}
+.resulthead h4{margin:0 0 6px;font-size:15px}
+.resulthead p{margin:0;font-size:12px;color:#b1d8cc;line-height:1.7}
+.resultsection{padding:15px 0;border-bottom:1px solid var(--line)}
+.resultsection:last-child{border-bottom:0}
+.resultsection h4{margin:0 0 10px;font-size:13px}
+.resultsection ul{margin:0;padding-left:20px}
+.resultsection li{padding:4px 0;color:#b8c9dd;font-size:12px;line-height:1.7}
+.badgelist{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.badge{font-size:10px;padding:5px 8px;border-radius:7px;background:#192a3d;color:#b8d5ff}
+.empty{
+ text-align:center;padding:25px 15px;border:1px dashed #344760;border-radius:13px;color:var(--muted)
+}
+.empty .big{font-size:28px;margin-bottom:8px}
+.log{
+ padding:14px;background:#070e18;border:1px solid #1e3046;border-radius:12px;
+ font:11px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;
+ color:#9cb5d3;white-space:pre-wrap;overflow-wrap:anywhere;max-height:230px;overflow:auto
+}
+.progress{height:5px;background:#24364d;border-radius:20px;overflow:hidden;margin-top:15px}
+.progress div{height:100%;width:0;background:linear-gradient(90deg,#3d8cff,#8c72ff);transition:width .3s}
+.footer{border-top:1px solid #23354b;padding-top:18px;color:#7288a3;font-size:11px;line-height:1.8}
+.toast{
+ position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);
+ background:#1b2d43;border:1px solid #3b5675;color:white;border-radius:12px;
+ padding:12px 16px;z-index:100;opacity:0;pointer-events:none;transition:.25s;
+ width:max-content;max-width:calc(100% - 30px);font-size:12px;box-shadow:var(--shadow)
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.hidden{display:none!important}
+@media(max-width:850px){
+ .layout{grid-template-columns:1fr}
+ .sidebar{position:static}
+ .navbox{display:flex;gap:4px;overflow-x:auto;padding:8px}
+ .navtitle,.sideinfo{display:none}
+ .navlink{white-space:nowrap;padding:10px}
+ .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .topinner{padding:11px 14px}
+ .brand h1{font-size:15px}
+ .brand small{font-size:9px}
+ .topright .pill:first-child{display:none}
+ main{padding:16px 12px 35px}
+ .hero{padding:23px 19px;border-radius:19px}
+ .hero h2{font-size:30px}
+ .card{padding:16px}
+ .stats{gap:7px}
+ .stat{padding:10px}
+ .statvalue{font-size:16px}
+ .statdesc{font-size:9px}
+ .formgrid{grid-template-columns:1fr}
+ .full{grid-column:auto}
+ .choicegrid{grid-template-columns:1fr}
+ .choice{display:flex;align-items:center;gap:12px}
+ .choice .ci{margin:0}
+ .devicegrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .cardhead h3{font-size:15px}
+ .btn{padding:11px 12px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="topinner">
+  <div class="brand">
+   <div class="logo">✚</div>
+   <div>
+    <h1>PhoneRescue <span style="color:#8cbcff">Ultra</span></h1>
+    <small>MULTI-DEVICE DIAGNOSTICS PLATFORM</small>
+   </div>
+  </div>
+  <div class="topright">
+   <span class="pill"><span class="dot" id="apiDot"></span><span id="apiText">Sunucu kontrol ediliyor</span></span>
+   <span class="pill">v1.0.0</span>
+  </div>
+ </div>
+</header>
+
+<main>
+ <section class="hero">
+  <div class="eyebrow">DEVICE INTELLIGENCE CENTER</div>
+  <h2>Telefonunun sorununu<br>anlamaya başla.</h2>
+  <p>Marka ve modelini seç, yaşadığın sorunu tanımla ve cihazına uygun kurtarma adımlarını tek bir merkezden incele. iPhone 3G/3GS dahil eski ve yeni cihazlar için rehberlik.</p>
+  <div class="heroactions">
+   <button class="btn primary" onclick="document.getElementById('diagnosis').scrollIntoView({behavior:'smooth'})">⌕ Tanılamaya başla</button>
+   <button class="btn" onclick="document.getElementById('devices').scrollIntoView({behavior:'smooth'})">▦ Cihaz kataloğu</button>
+  </div>
+ </section>
+
+ <div class="layout">
+  <aside class="sidebar">
+   <nav class="navbox" aria-label="Ana menü">
+    <div class="navtitle">WORKSPACE</div>
+    <a class="navlink active" href="#overview"><span class="ico">◈</span>Genel görünüm</a>
+    <a class="navlink" href="#devices"><span class="ico">▣</span>Cihaz kataloğu</a>
+    <a class="navlink" href="#diagnosis"><span class="ico">⌕</span>Arıza tanılama</a>
+    <a class="navlink" href="#recovery"><span class="ico">⛨</span>Kurtarma merkezi</a>
+    <a class="navlink" href="#reports"><span class="ico">▤</span>Raporlar</a>
+    <a class="navlink" href="#system"><span class="ico">⚙</span>Sistem durumu</a>
+   </nav>
+   <div class="sideinfo">Güvenli çalışma modu aktif.<br>İzinsiz sistem değişikliği ve otomatik veri silme kapalıdır.</div>
+  </aside>
+
+  <div class="content">
+   <section id="overview" class="stats">
+    <div class="stat">
+     <div class="statlabel">SUNUCU</div>
+     <div class="statvalue" id="statApi">Kontrol...</div>
+     <div class="statdesc">API bağlantısı</div>
+    </div>
+    <div class="stat">
+     <div class="statlabel">CİHAZ PROFİLİ</div>
+     <div class="statvalue" id="statDevices">—</div>
+     <div class="statdesc">Sunucu kataloğu</div>
+    </div>
+    <div class="stat">
+     <div class="statlabel">OTOMATİK SİLME</div>
+     <div class="statvalue" style="color:var(--green)">Kapalı</div>
+     <div class="statdesc">Veri koruma modu</div>
+    </div>
+   </section>
+
+   <section class="card" id="devices">
+    <div class="cardhead">
+     <div>
+      <h3>01 / Cihaz kataloğu</h3>
+      <p>Tanılamak istediğin cihaz ailesini seç.</p>
+     </div>
+     <span class="step">DEVICE SELECT</span>
+    </div>
+    <div class="choicegrid" style="margin-bottom:16px">
+     <button class="choice selected" data-family="iphone" onclick="chooseFamily('iphone')">
+      <span class="ci"></span><span><strong>Apple iPhone</strong><span>iPhone 3G/3GS öncelikli</span></span>
+     </button>
+     <button class="choice" data-family="android" onclick="chooseFamily('android')">
+      <span class="ci">▣</span><span><strong>Android</strong><span>Samsung, Xiaomi ve diğerleri</span></span>
+     </button>
+     <button class="choice" data-family="other" onclick="chooseFamily('other')">
+      <span class="ci">▤</span><span><strong>Diğer cihazlar</strong><span>Genel kurtarma rehberi</span></span>
+     </button>
+    </div>
+    <div class="devicegrid" id="deviceGrid">
+     <button class="device active" data-id="apple-iphone-3g" onclick="selectDevice('apple-iphone-3g')"><div class="brandicon">📱</div><strong>iPhone 3G</strong><small>Eski nesil iOS</small></button>
+     <button class="device" data-id="apple-iphone-3gs" onclick="selectDevice('apple-iphone-3gs')"><div class="brandicon">📱</div><strong>iPhone 3GS</strong><small>Eski nesil iOS</small></button>
+     <button class="device" data-id="apple-iphone-other" onclick="selectDevice('apple-iphone-other')"><div class="brandicon">📱</div><strong>Diğer iPhone</strong><small>iPhone modelleri</small></button>
+    </div>
+    <div class="help" id="deviceHelp" style="margin-top:12px">Seçili profil: iPhone 3G. Cihazın gerçek bağlantısı henüz doğrulanmadı.</div>
+   </section>
+
+   <section class="card" id="diagnosis">
+    <div class="cardhead">
+     <div>
+      <h3>02 / Akıllı arıza tanılama</h3>
+      <p>Belirtilere göre sunucudan cihazına uygun kontrol adımlarını al.</p>
+     </div>
+     <span class="step">DIAGNOSTICS</span>
+    </div>
+    <form id="diagnoseForm">
+     <div class="formgrid">
+      <div class="field">
+       <label for="brand">Marka</label>
+       <input id="brand" maxlength="60" value="Apple" required placeholder="Örn. Apple">
+      </div>
+      <div class="field">
+       <label for="model">Model</label>
+       <input id="model" maxlength="80" value="iPhone 3G" required placeholder="Örn. iPhone 3GS">
+      </div>
+      <div class="field full">
+       <label for="issueId">Sorun türü</label>
+       <select id="issueId">
+        <option value="wont_turn_on">Telefon hiç açılmıyor</option>
+        <option value="boot_loop">Açılış logosunda kalıyor</option>
+        <option value="usb_connection">USB bağlantısı kurulamıyor</option>
+        <option value="charging">Şarj olmuyor</option>
+        <option value="apps_crashing">Uygulamalar açılmıyor veya çöküyor</option>
+        <option value="screen">Ekran veya dokunmatik sorunu</option>
+        <option value="storage">Depolama alanı sorunu</option>
+        <option value="unknown">Diğer bir sorun</option>
+       </select>
+      </div>
+      <div class="field full">
+       <label for="issue">Belirtilerin ayrıntısı</label>
+       <textarea id="issue" maxlength="500" required placeholder="Örn. Telefon Apple logosunda kalıyor, bilgisayara bağlayınca görünmüyor..."></textarea>
+       <div class="help">Kişisel bilgilerini, şifreni veya hesap bilgilerini yazma.</div>
+      </div>
+     </div>
+     <div class="actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+      <button type="submit" class="btn primary" id="diagnoseBtn">⌕ Analizi başlat</button>
+      <button type="button" class="btn" onclick="resetDiagnosis()">Temizle</button>
+     </div>
+    </form>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="result" id="result" aria-live="polite"></div>
+   </section>
+
+   <section class="card" id="recovery">
+    <div class="cardhead">
+     <div>
+      <h3>03 / Kurtarma merkezi</h3>
+      <p>Verileri korumayı önceleyen adım adım rehber.</p>
+     </div>
+     <span class="step">RECOVERY</span>
+    </div>
+    <div class="statusbox">
+     <span style="font-size:20px">🛡️</span>
+     <p><strong style="color:var(--text)">Güvenli kurtarma ilkesi</strong><br>Önce kablo, güç ve bağlantı gibi düşük riskli kontrolleri yap. Sıfırlama, firmware yükleme veya toplu uygulama silme gibi işlemler otomatik gerçekleştirilmez.</p>
+    </div>
+    <div class="actions">
+     <button class="btn primary" id="guideBtn">Seçili cihazın rehberini getir</button>
+     <button class="btn" onclick="document.getElementById('diagnosis').scrollIntoView({behavior:'smooth'})">Arızayı tanımla</button>
+    </div>
+    <div class="result" id="guideResult" aria-live="polite"></div>
+   </section>
+
+   <section class="card" id="reports">
+    <div class="cardhead">
+     <div>
+      <h3>04 / Tanılama raporları</h3>
+      <p>Son analizini görüntüle veya metin dosyası olarak kaydet.</p>
+     </div>
+     <span class="step">REPORT CENTER</span>
+    </div>
+    <div id="reportEmpty" class="empty">
+     <div class="big">▤</div>
+     <strong>Henüz rapor oluşturulmadı</strong>
+     <p class="help">Bir tanılama tamamlandığında rapor burada görünür.</p>
+    </div>
+    <div id="reportPanel" class="hidden">
+     <div class="statusbox">
+      <span style="font-size:20px">✓</span>
+      <p><strong id="reportTitle" style="color:var(--text)">Tanılama raporu</strong><br><span id="reportMeta"></span></p>
+     </div>
+     <div class="actions">
+      <button class="btn primary" id="downloadReport">↓ Raporu indir</button>
+      <button class="btn" id="copyReport">Rapor metnini kopyala</button>
+     </div>
+    </div>
+   </section>
+
+   <section class="card" id="system">
+    <div class="cardhead">
+     <div>
+      <h3>05 / Sistem durumu</h3>
+      <p>Sunucu bağlantısı ve istek günlüğü.</p>
+     </div>
+     <span class="step">SYSTEM STATUS</span>
+    </div>
+    <div class="statusbox" style="margin-bottom:14px">
+     <span class="dot" id="systemDot"></span>
+     <p id="systemMessage">Sunucu kontrol ediliyor...</p>
+    </div>
+    <div class="row" style="margin-bottom:10px">
+     <strong style="font-size:12px">İşlem günlüğü</strong>
+     <button class="btn" style="padding:6px 10px;font-size:11px" onclick="clearLog()">Günlüğü temizle</button>
+    </div>
+    <div class="log" id="log" aria-live="polite">[SYSTEM] PhoneRescue Ultra başlatıldı.
+[SAFE] Otomatik cihaz değişikliği devre dışı.
+[INFO] API bağlantısı kontrol ediliyor...</div>
+    <div class="actions">
+     <button class="btn" id="retryHealth">↻ Sunucuyu yeniden kontrol et</button>
+    </div>
+   </section>
+
+   <div class="footer">
+    <strong>PhoneRescue Ultra</strong> · Çok markalı cihaz ön tanılama arayüzü.<br>
+    Bu uygulama bir üretici servis aracı değildir. Tanılama önerileri kesin donanım teşhisi sayılmaz. USB bağlantısı, işletim sistemi erişimi anlamına gelmez. Gerçek onarım için modele uygun resmi araç veya yetkili teknik servis gerekebilir.
+   </div>
+  </div>
+ </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+const API = '/api/v1';
+const $ = id => document.getElementById(id);
+
+let devices = [];
+let selectedFamily = 'iphone';
+let selectedDevice = 'apple-iphone-3g';
+let latestReport = null;
+let latestReportText = '';
+let toastTimer = null;
+
+function escapeHTML(value) {
+ return String(value ?? '').replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
+}
+
+function log(message) {
+ const time = new Date().toLocaleTimeString('tr-TR');
+ const el = $('log');
+ const lines = (el.textContent || '').split('\n');
+ lines.push('[' + time + '] ' + String(message).slice(0,350));
+ el.textContent = lines.slice(-80).join('\n');
+ el.scrollTop = el.scrollHeight;
+}
+
+function toast(message) {
+ const el = $('toast');
+ el.textContent = message;
+ el.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+async function apiFetch(route, options = {}) {
+ const response = await fetch(API + route, {
+  method: options.method || 'GET',
+  headers: {
+   'Accept':'application/json',
+   ...(options.body ? {'Content-Type':'application/json'} : {}),
+   ...(options.headers || {})
+  },
+  body: options.body ? JSON.stringify(options.body) : undefined,
+  cache:'no-store',
+  signal: options.signal
+ });
+
+ const type = response.headers.get('content-type') || '';
+ if (!type.includes('application/json')) {
+  throw new Error('Sunucu JSON yerine farklı bir yanıt verdi. Dağıtım ve API adresini kontrol et.');
+ }
+
+ const data = await response.json();
+ if (!response.ok || data.ok === false) {
+  throw new Error(data.error?.message || data.message || 'İstek başarısız (' + response.status + ')');
+ }
+
+ return data;
+}
+
+function setApiStatus(ok, message) {
+ $('apiDot').className = 'dot' + (ok ? ' green' : ' red');
+ $('apiText').textContent = message;
+ $('statApi').textContent = ok ? 'Çevrimiçi' : 'Çevrimdışı';
+ $('statApi').style.color = ok ? 'var(--green)' : 'var(--red)';
+ $('systemDot').className = 'dot' + (ok ? ' green' : ' red');
+ $('systemMessage').textContent = message + (ok
+  ? ' · Sunucu yanıt veriyor; bağlı telefonun çalıştığı doğrulanmış değildir.'
+  : ' · API adresini, dağıtımı ve Render günlüklerini kontrol et.');
+}
+
+async function checkHealth() {
+ try {
+  const data = await fetch('/api/health', {cache:'no-store'});
+  if (!data.ok) throw new Error('Sunucu sağlık kontrolü başarısız.');
+  const health = await data.json();
+  if (!health.ok) throw new Error('Sunucu hazır değil.');
+  setApiStatus(true, 'Sunucu çevrimiçi');
+  log('API sağlık kontrolü başarılı.');
+  return true;
+ } catch (error) {
+  setApiStatus(false, 'API bağlantısı yok');
+  log('Sağlık kontrolü başarısız: ' + error.message);
+  return false;
+ }
+}
+
+function chooseFamily(family) {
+ selectedFamily = family;
+ document.querySelectorAll('[data-family]').forEach(el => {
+  el.classList.toggle('selected', el.dataset.family === family);
+ });
+ renderDevices();
+}
+
+function iconFor(device) {
+ if (device.family === 'iphone') return '📱';
+ if (device.family === 'android') return '🤖';
+ return '📲';
+}
+
+function renderDevices() {
+ const grid = $('deviceGrid');
+ const filtered = devices.filter(d => d.family === selectedFamily);
+
+ grid.innerHTML = '';
+
+ if (!filtered.length) {
+  grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Bu kategoride cihaz bulunamadı. Sunucu bağlantısını kontrol et.</div>';
+  return;
+ }
+
+ filtered.forEach(device => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'device' + (device.id === selectedDevice ? ' active' : '');
+  button.dataset.id = device.id;
+
+  const icon = document.createElement('div');
+  icon.className = 'brandicon';
+  icon.textContent = iconFor(device);
+
+  const title = document.createElement('strong');
+  title.textContent = device.model;
+
+  const small = document.createElement('small');
+  small.textContent = device.era === 'legacy'
+   ? 'Eski nesil cihaz'
+   : device.family.toUpperCase() + ' · Rehber';
+
+  button.append(icon, title, small);
+  button.addEventListener('click', () => selectDevice(device.id));
+  grid.appendChild(button);
+ });
+}
+
+function selectDevice(id) {
+ const device = devices.find(d => d.id === id);
+ if (!device) {
+  toast('Cihaz kataloğunda bu model bulunamadı.');
+  return;
+ }
+
+ selectedDevice = id;
+ selectedFamily = device.family;
+
+ document.querySelectorAll('[data-family]').forEach(el => {
+  el.classList.toggle('selected', el.dataset.family === selectedFamily);
+ });
+
+ renderDevices();
+
+ $('brand').value = device.brand;
+ $('model').value = device.model;
+ $('deviceHelp').textContent = 'Seçili profil: ' + device.model +
+  '. Bu seçim fiziksel bağlantıyı doğrulamaz.';
+
+ log('Seçilen profil: ' + device.brand + ' ' + device.model);
+}
+
+async function loadDevices() {
+ try {
+  const data = await apiFetch('/devices');
+  devices = data.devices || [];
+  $('statDevices').textContent = String(devices.length);
+  renderDevices();
+
+  if (devices.some(d => d.id === selectedDevice)) {
+   selectDevice(selectedDevice);
+  } else if (devices.length) {
+   selectDevice(devices[0].id);
+  }
+
+  log('Cihaz kataloğu sunucudan alındı: ' + devices.length + ' profil.');
+ } catch (error) {
+  $('statDevices').textContent = 'Hata';
+  log('Cihaz kataloğu yüklenemedi: ' + error.message);
+  toast(error.message);
+ }
+}
+
+function renderList(title, items) {
+ if (!Array.isArray(items) || !items.length) return '';
+ return '<div class="resultsection"><h4>' + escapeHTML(title) +
+  '</h4><ul>' + items.map(item => '<li>' + escapeHTML(item) + '</li>').join('') +
+  '</ul></div>';
+}
+
+function buildReportText(data) {
+ const report = data.report || {};
+ const device = data.device || {};
+ const issue = data.issue || {};
+ const assessment = data.assessment || {};
+
+ return [
+  'PHONERESCUE ULTRA — TANI RAPORU',
+  'Rapor: ' + (report.reportId || 'N/A'),
+  'Tarih: ' + (report.createdAt || new Date().toISOString()),
+  'Cihaz: ' + [device.brand, device.model].filter(Boolean).join(' '),
+  'Sorun: ' + (issue.label || 'Belirtilmemiş'),
+  'Açıklama: ' + (issue.description || ''),
+  '',
+  'ÖN DEĞERLENDİRME',
+  assessment.message || 'Ön değerlendirme bulunmuyor.',
+  '',
+  'KONTROLLER',
+  ...(assessment.checks || []).map((x, i) => (i+1)+'. '+x),
+  '',
+  'KURTARMA ADIMLARI',
+  ...(assessment.recoverySteps || []).map((x, i) => (i+1)+'. '+x),
+  '',
+  'UYARILAR',
+  ...(assessment.warnings || []).map((x, i) => (i+1)+'. '+x),
+  '',
+  'Güvenlik: Gerçek cihaz testi veya onarım gerçekleştirilmedi.',
+  'Otomatik veri silme: Kapalı.'
+ ].join('\n');
+}
+
+function displayDiagnosis(data) {
+ const report = data.report || {};
+ const device = data.device || {};
+ const issue = data.issue || {};
+ const assessment = data.assessment || {};
+ const result = $('result');
+
+ result.innerHTML = `
+  <div class="resulthead">
+   <h4>✓ Ön değerlendirme hazır</h4>
+   <p>Bu sonuç belirtilerine göre hazırlanmış bir rehberdir; fiziksel cihaz testi veya kesin arıza teşhisi değildir.</p>
+   <div class="badgelist">
+    <span class="badge">${escapeHTML(device.brand || '')}</span>
+    <span class="badge">${escapeHTML(device.model || '')}</span>
+    <span class="badge">${escapeHTML(issue.label || '')}</span>
+   </div>
+  </div>
+  ${renderList('Kontrol edilmesi gerekenler', assessment.checks)}
+  ${renderList('Önerilen kurtarma adımları', assessment.recoverySteps)}
+  ${renderList('Önemli uyarılar', assessment.warnings)}
+  <div class="notice blue">Rapor numarası: ${escapeHTML(report.reportId || '—')}<br>
+  Sistem dosyaları değiştirilmedi; uygulamalar silinmedi; cihazın verileri temizlenmedi.</div>
+ `;
+
+ result.classList.add('show');
+
+ latestReport = data;
+ latestReportText = buildReportText(data);
+
+ $('reportEmpty').classList.add('hidden');
+ $('reportPanel').classList.remove('hidden');
+ $('reportTitle').textContent = (device.model || 'Cihaz') + ' — ' + (issue.label || 'Tanılama');
+ $('reportMeta').textContent = 'Rapor: ' + (report.reportId || '—') +
+  ' · ' + new Date(report.createdAt || Date.now()).toLocaleString('tr-TR');
+
+ log('Tanılama rehberi oluşturuldu. Gerçek cihaz taraması yapılmadı.');
+}
+
+$('diagnoseForm').addEventListener('submit', async event => {
+ event.preventDefault();
+
+ const button = $('diagnoseBtn');
+ const bar = $('progressBar');
+ const result = $('result');
+
+ const body = {
+  deviceId: selectedDevice,
+  brand: $('brand').value.trim(),
+  model: $('model').value.trim(),
+  issueId: $('issueId').value,
+  issue: $('issue').value.trim()
+ };
+
+ if (!body.brand || !body.model || body.issue.length < 3) {
+  toast('Marka, model ve en az 3 karakterlik sorun açıklaması gir.');
+  return;
+ }
+
+ button.disabled = true;
+ button.textContent = 'Analiz hazırlanıyor...';
+ bar.style.width = '20%';
+ result.classList.remove('show');
+ result.innerHTML = '';
+
+ log('Tanılama isteği sunucuya gönderildi.');
+
+ try {
+  bar.style.width = '55%';
+  const data = await apiFetch('/diagnose', {method:'POST', body});
+  bar.style.width = '100%';
+  displayDiagnosis(data);
+  log('Sunucu yanıtı alındı: ' + data.report.reportId);
+  toast('Tanılama rehberi hazır.');
+ } catch (error) {
+  result.innerHTML = '<div class="notice red"><strong>İstek tamamlanamadı</strong><br>' +
+   escapeHTML(error.message) +
+   '<br>Sunucu dağıtımını ve API adresini kontrol et.</div>';
+  result.classList.add('show');
+  log('Tanılama hatası: ' + error.message);
+  toast('Tanılama isteği başarısız.');
+ } finally {
+  button.disabled = false;
+  button.textContent = '⌕ Analizi başlat';
+  setTimeout(() => {bar.style.width = '0%';}, 1200);
+ }
+});
+
+function resetDiagnosis() {
+ $('issue').value = '';
+ $('issueId').selectedIndex = 0;
+ $('result').innerHTML = '';
+ $('result').classList.remove('show');
+ $('progressBar').style.width = '0%';
+ toast('Arıza formu temizlendi.');
+}
+
+$('guideBtn').addEventListener('click', async () => {
+ const button = $('guideBtn');
+ const output = $('guideResult');
+
+ button.disabled = true;
+ button.textContent = 'Rehber getiriliyor...';
+ output.classList.remove('show');
+
+ try {
+  const data = await apiFetch('/guides/' + encodeURIComponent(selectedDevice));
+  output.innerHTML =
+   '<div class="resulthead"><h4>' + escapeHTML(data.device.model) +
+   ' kurtarma rehberi</h4><p>Öneriler cihazın gerçek durumu kontrol edilmeden uygulanacak işlemler değildir.</p></div>' +
+   renderList('Adım adım kurtarma', data.steps) +
+   renderList('Sınırlamalar ve uyarılar', data.limitations);
+  output.classList.add('show');
+  log('Kurtarma rehberi yüklendi: ' + data.device.model);
+ } catch (error) {
+  output.innerHTML = '<div class="notice red">' + escapeHTML(error.message) + '</div>';
+  output.classList.add('show');
+  log('Rehber hatası: ' + error.message);
+ } finally {
+  button.disabled = false;
+  button.textContent = 'Seçili cihazın rehberini getir';
+ }
+});
+
+$('downloadReport').addEventListener('click', () => {
+ if (!latestReportText) {
+  toast('Önce bir tanılama raporu oluştur.');
+  return;
+ }
+
+ const blob = new Blob([latestReportText], {type:'text/plain;charset=utf-8'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url;
+ a.download = 'phonerescue-rapor.txt';
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(() => URL.revokeObjectURL(url), 1000);
+ log('Rapor dosyası dışa aktarıldı.');
+});
+
+$('copyReport').addEventListener('click', async () => {
+ if (!latestReportText) {
+  toast('Önce bir rapor oluştur.');
+  return;
+ }
+
+ try {
+  if (!navigator.clipboard || !navigator.clipboard.writeText) {
+   throw new Error('Clipboard API kullanılamıyor.');
+  }
+  await navigator.clipboard.writeText(latestReportText);
+  toast('Rapor kopyalandı.');
+  log('Rapor panoya kopyalandı.');
+ } catch (error) {
+  toast('Kopyalama engellendi. Raporu indir seçeneğini kullan.');
+  log('Panoya kopyalama başarısız.');
+ }
+});
+
+$('retryHealth').addEventListener('click', async () => {
+ $('retryHealth').disabled = true;
+ await checkHealth();
+ await loadDevices();
+ $('retryHealth').disabled = false;
+});
+
+function clearLog() {
+ $('log').textContent = '[SYSTEM] Günlük kullanıcı tarafından temizlendi.';
+}
+
+async function init() {
+ log('Arayüz başlatıldı.');
+ await checkHealth();
+ await loadDevices();
+ log('Arayüz hazır.');
+}
+
+init();
+</script>
+</body>
+</html>
