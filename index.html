@@ -1,0 +1,647 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080c16">
+<meta name="description" content="PhoneRescue Ultra — Telefon sorunlarını analiz et, güvenli çözüm önerileri al ve teşhis raporları oluştur.">
+<title>PhoneRescue Ultra | Akıllı Cihaz Merkezi</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080c16;--panel:#101725;--panel2:#151e2e;--line:#253147;
+  --text:#edf3ff;--muted:#8d9bb3;--blue:#6694ff;--cyan:#55dfd0;
+  --green:#57dfaa;--yellow:#ffd477;--red:#ff7888;--radius:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 80% 0%,#162548 0,transparent 40%),var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+button:disabled{opacity:.5;cursor:not-allowed}
+a{color:var(--cyan);text-decoration:none}
+.shell{max-width:1500px;margin:auto;padding:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:8px 0 24px;border-bottom:1px solid #ffffff12}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.logo{height:45px;width:45px;border-radius:15px;background:linear-gradient(145deg,#74a2ff,#4c62df);display:grid;place-items:center;box-shadow:0 8px 30px #4569df35;color:white;font-size:25px}
+.brand h1{font-size:19px;margin:0;letter-spacing:-.6px}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#111b2b;border-radius:999px;padding:8px 12px;color:#b8c6dc;font-size:12px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--yellow);display:inline-block}
+.dot.ok{background:var(--green);box-shadow:0 0 10px #57dfaa70}
+.dot.bad{background:var(--red)}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:11px 15px;border:1px solid var(--line);border-radius:12px;background:#182338;color:var(--text);font-weight:650;transition:.18s}
+.btn:hover{border-color:#6889cc;transform:translateY(-1px)}
+.btn.primary{border-color:transparent;background:linear-gradient(120deg,#6c96ff,#6170ed);color:white;box-shadow:0 8px 25px #536ce62a}
+.btn.ghost{background:transparent}
+.btn.small{padding:8px 11px;font-size:12px}
+.hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(270px,.75fr);gap:18px;margin:24px 0}
+.hero-main,.hero-side,.panel,.stat{background:linear-gradient(145deg,#131d2e,#0e1522);border:1px solid var(--line);border-radius:var(--radius)}
+.hero-main{padding:30px;position:relative;overflow:hidden}
+.hero-main:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;background:#5578ff12;right:-80px;top:-110px;pointer-events:none}
+.eyebrow{font-size:11px;letter-spacing:1.7px;color:var(--cyan);text-transform:uppercase;font-weight:800}
+.hero h2{font-size:clamp(27px,4vw,43px);line-height:1.13;letter-spacing:-1.5px;max-width:650px;margin:13px 0}
+.hero h2 span{color:#80a5ff}
+.hero-main>p{color:var(--muted);max-width:590px;margin:0 0 23px;line-height:1.8}
+.hero-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.hero-side{padding:23px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.side-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.side-heading h3{font-size:14px;margin:0}
+.tag{font-size:10px;color:var(--cyan);border:1px solid #55dfd02a;background:#55dfd00c;border-radius:7px;padding:4px 7px}
+.device-illustration{display:grid;place-items:center;min-height:130px}
+.phone-art{width:66px;height:116px;border:3px solid #7185b6;border-radius:16px;position:relative;background:linear-gradient(150deg,#202f4c,#111a2a);box-shadow:0 12px 40px #0006;display:grid;place-items:center}
+.phone-art:before{content:"";position:absolute;top:5px;width:22px;height:4px;border-radius:8px;background:#7185b6}
+.phone-art span{font-size:28px;color:#81a5ff}
+.side-note{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:25px}
+.stat{padding:17px;min-width:0}
+.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
+.stat-icon{width:31px;height:31px;border-radius:10px;background:#789bff17;display:grid;place-items:center;color:#8fb0ff;font-size:17px}
+.stat-value{font-size:25px;font-weight:800;letter-spacing:-.7px;margin-top:10px;overflow-wrap:anywhere}
+.stat-foot{font-size:11px;color:var(--muted);margin-top:3px}
+.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr);gap:18px;align-items:start}
+.stack{display:grid;gap:18px;min-width:0}
+.panel{padding:22px;min-width:0}
+.panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+.panel-heading h3{font-size:16px;letter-spacing:-.3px;margin:0}
+.panel-heading p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.section-label{font-size:10px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;font-weight:800;margin:21px 0 10px}
+.field{display:grid;gap:7px;margin-bottom:14px}
+.field label{font-size:12px;color:#c0cbe0;font-weight:650}
+.field input,.field select,.field textarea,.searchbox input{width:100%;min-width:0;border:1px solid var(--line);border-radius:11px;padding:12px;background:#0b1220;color:var(--text)}
+.field textarea{resize:vertical;min-height:90px}
+.field input::placeholder,.field textarea::placeholder,.searchbox input::placeholder{color:#687791}
+.field select option{background:#101725}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.quick-symptoms{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#101a2b;color:#c5d1e7;border-radius:999px;padding:8px 11px;font-size:12px}
+.chip.selected{background:#536fd51e;border-color:#7595ff;color:#b8caff}
+.wide{width:100%}
+.status-box{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#0b1220;margin-top:13px}
+.status-symbol{width:34px;height:34px;flex-shrink:0;border-radius:11px;background:#6b94ff16;display:grid;place-items:center;color:#8fb0ff;font-size:18px}
+.status-box strong{display:block;font-size:12px}
+.status-box p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.usb-state{margin-top:14px;border:1px solid #28374c;border-radius:14px;padding:16px;background:#0c1421}
+.usb-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.usb-row strong{font-size:13px}
+.usb-state>p{color:var(--muted);font-size:12px;line-height:1.75;margin:12px 0}
+.result-area{display:grid;gap:12px}
+.result-empty{text-align:center;padding:30px 12px;border:1px dashed #34435b;border-radius:14px;color:var(--muted)}
+.result-empty .big{font-size:32px;margin-bottom:8px}
+.issue-card{border:1px solid var(--line);background:#0d1523;border-radius:14px;padding:16px}
+.issue-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.issue-title h4{margin:0;font-size:14px}
+.issue-card ul{padding-left:19px;margin:12px 0 0;color:#b7c5dc;font-size:12px}
+.issue-card li{padding:3px 0}
+.severity{font-size:10px;padding:4px 7px;border-radius:7px;white-space:nowrap;background:#f2bd4d15;color:var(--yellow)}
+.severity.high{background:#ff788815;color:var(--red)}
+.severity.low{background:#57dfaa13;color:var(--green)}
+.disclaimer{font-size:11px;line-height:1.7;color:var(--muted);margin-top:14px}
+.searchbox{display:flex;gap:8px;margin-bottom:15px}
+.searchbox input{flex:1}
+.issue-list{display:grid;gap:9px}
+.issue-row{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#0c1421}
+.issue-row .status-symbol{flex-shrink:0}
+.issue-row strong{font-size:12px;display:block}
+.issue-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.issue-row .btn{margin-left:auto;flex-shrink:0}
+.history-list{display:grid;gap:9px}
+.history-item{padding:12px;border:1px solid var(--line);border-radius:12px;background:#0c1421;display:flex;gap:12px;align-items:center}
+.history-item .history-text{min-width:0;flex:1}
+.history-item strong{display:block;font-size:12px;overflow-wrap:anywhere}
+.history-item small{display:block;color:var(--muted);margin-top:4px;font-size:11px}
+.history-item button{flex-shrink:0}
+.footer{margin-top:25px;padding:22px 4px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;border-top:1px solid #ffffff12;color:var(--muted);font-size:11px}
+.toast{position:fixed;right:20px;bottom:20px;z-index:20;max-width:min(390px,calc(100vw - 40px));background:#1a2840;border:1px solid #405474;padding:14px 17px;border-radius:13px;box-shadow:0 12px 40px #0008;color:var(--text);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.error{border-color:#874554}
+.hidden{display:none!important}
+.loading{opacity:.65;pointer-events:none}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media(max-width:950px){.hero,.layout{grid-template-columns:1fr}.hero-side{min-height:0}.device-illustration{min-height:95px}.phone-art{transform:scale(.85)}}
+@media(max-width:650px){.shell{padding:13px}.topbar{align-items:flex-start}.brand h1{font-size:16px}.logo{width:39px;height:39px}.top-actions .pill{display:none}.hero{margin-top:16px}.hero-main{padding:23px 19px}.hero-side,.panel{padding:17px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{padding:13px}.stat-value{font-size:22px}.form-grid{grid-template-columns:1fr;gap:0}.hero h2{font-size:31px}.top-actions .btn{padding:9px 10px;font-size:11px}.panel-heading{gap:8px}.issue-row .btn{padding:7px;font-size:11px}.footer{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">✳</div>
+    <div><h1>PhoneRescue <span style="color:#81a5ff">Ultra</span></h1><p>Akıllı cihaz sorun giderme merkezi</p></div>
+  </div>
+  <div class="top-actions">
+    <span class="pill"><span class="dot" id="apiDot"></span><span id="apiStatus">Sunucu kontrol ediliyor</span></span>
+    <button class="btn ghost small" id="refreshBtn">↻ Yenile</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-main">
+    <div class="eyebrow">Cihaz bakım merkezi · 01</div>
+    <h2>Sorunu bul.<br><span>Çözüm yolunu keşfet.</span></h2>
+    <p>Cihazının belirtilerini gir, olası sorunları değerlendir ve güvenli sorun giderme adımlarını tek panelde görüntüle.</p>
+    <div class="hero-buttons">
+      <button class="btn primary" id="startBtn">✦ Yeni teşhis başlat</button>
+      <button class="btn" id="browseBtn">⌕ Sorun kütüphanesi</button>
+    </div>
+  </div>
+  <div class="hero-side">
+    <div class="side-heading"><h3>Cihaz bağlantısı</h3><span class="tag">BAĞLANTI MERKEZİ</span></div>
+    <div class="device-illustration"><div class="phone-art"><span>⌁</span></div></div>
+    <div class="side-note"><span class="dot" id="usbDot"></span> <span id="usbSummary">USB bağlantısı henüz kontrol edilmedi.</span><br><br>Bağlantı algısı ile donanım teşhisi farklı işlemlerdir.</div>
+    <button class="btn wide" id="usbBtn">↔ USB bağlantısını kontrol et</button>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat"><div class="stat-top"><span>Cihaz kataloğu</span><span class="stat-icon">▣</span></div><div class="stat-value" id="deviceCount">—</div><div class="stat-foot">Desteklenen cihaz profilleri</div></div>
+  <div class="stat"><div class="stat-top"><span>Sorun kütüphanesi</span><span class="stat-icon">⌕</span></div><div class="stat-value" id="issueCount">—</div><div class="stat-foot">Yardım başlıkları</div></div>
+  <div class="stat"><div class="stat-top"><span>Oluşturulan rapor</span><span class="stat-icon">▤</span></div><div class="stat-value" id="reportCount">0</div><div class="stat-foot">Bu oturumdaki raporlar</div></div>
+  <div class="stat"><div class="stat-top"><span>Servis durumu</span><span class="stat-icon">⌁</span></div><div class="stat-value" id="serviceState" style="font-size:20px">Kontrol</div><div class="stat-foot" id="serviceFoot">API yanıtı bekleniyor</div></div>
+</section>
+
+<main class="layout">
+  <div class="stack">
+    <section class="panel" id="diagnosticPanel">
+      <div class="panel-heading"><div><h3>✦ Akıllı sorun analizi</h3><p>Belirtileri seç veya kendi gözlemini yaz.</p></div><span class="tag">TEŞHİS 01</span></div>
+      <form id="diagnoseForm">
+        <div class="form-grid">
+          <div class="field"><label for="deviceSelect">Cihaz modeli</label><select id="deviceSelect"><option value="iphone">iPhone</option></select></div>
+          <div class="field"><label for="categorySelect">Sorun kategorisi</label><select id="categorySelect">
+            <option value="">Belirtilere göre belirle</option>
+            <option value="battery">Pil / batarya</option><option value="charging">Şarj sorunu</option>
+            <option value="overheating">Aşırı ısınma</option><option value="slow">Yavaşlama / donma</option>
+            <option value="network">Wi-Fi / şebeke</option><option value="screen">Ekran / dokunmatik</option>
+            <option value="usb">USB bağlantısı</option><option value="boot">Açılmıyor</option>
+            <option value="audio">Ses / mikrofon</option>
+          </select></div>
+        </div>
+        <div class="section-label">Hızlı belirti seçimi</div>
+        <div class="quick-symptoms" id="symptomChips">
+          <button type="button" class="chip" data-symptom="battery">🔋 Pil hızlı bitiyor</button>
+          <button type="button" class="chip" data-symptom="charging">⚡ Şarj olmuyor</button>
+          <button type="button" class="chip" data-symptom="overheating">♨ Isınıyor</button>
+          <button type="button" class="chip" data-symptom="slow">◷ Donuyor / yavaş</button>
+          <button type="button" class="chip" data-symptom="network">⌁ İnternet yok</button>
+          <button type="button" class="chip" data-symptom="screen">▣ Ekran sorunu</button>
+          <button type="button" class="chip" data-symptom="usb">↔ USB görmüyor</button>
+          <button type="button" class="chip" data-symptom="boot">⏻ Açılmıyor</button>
+          <button type="button" class="chip" data-symptom="audio">♫ Ses sorunu</button>
+        </div>
+        <div class="field" style="margin-top:19px"><label for="symptomsInput">Belirtiler ve hata mesajları</label><textarea id="symptomsInput" placeholder="Örnek: iPhone 3GS bilgisayara bağlanınca görünmüyor, şarj oluyor ama bilgisayar algılamıyor..."></textarea></div>
+        <div class="field"><label for="observationsInput">Ek gözlemler (isteğe bağlı)</label><input id="observationsInput" placeholder="Örn. Sorun güncellemeden sonra başladı"></div>
+        <button class="btn primary wide" id="analyzeBtn" type="submit">✦ Analizi başlat</button>
+        <p class="disclaimer">Analiz, girdiğin belirtilerle eşleşen sorun başlıklarını bulur. Donanım arızasını kesin olarak doğrulamaz.</p>
+      </form>
+      <hr>
+      <div class="panel-heading"><div><h3>Analiz sonuçları</h3><p id="resultSubtitle">Henüz bir analiz yapılmadı.</p></div><button class="btn small" id="clearResults">Temizle</button></div>
+      <div class="result-area" id="results">
+        <div class="result-empty"><div class="big">⌁</div><strong>Analiz için hazır</strong><p>Belirtileri seç ve analiz düğmesine bas.</p></div>
+      </div>
+    </section>
+
+    <section class="panel" id="libraryPanel">
+      <div class="panel-heading"><div><h3>Sorun kütüphanesi</h3><p>Yaygın cihaz sorunları için güvenli kontrol adımları.</p></div><span class="tag">REHBER</span></div>
+      <div class="searchbox"><input id="searchInput" type="search" placeholder="Sorun ara: şarj, USB, ekran..."><button class="btn primary" id="searchBtn">Ara</button></div>
+      <div class="issue-list" id="issueList"><div class="result-empty">Sorun kütüphanesi yükleniyor...</div></div>
+    </section>
+  </div>
+
+  <aside class="stack">
+    <section class="panel">
+      <div class="panel-heading"><div><h3>USB tanılama merkezi</h3><p>Bağlantı koşullarını kontrol et.</p></div><span class="tag">USB</span></div>
+      <div class="status-box"><div class="status-symbol">↔</div><div><strong id="usbTitle">Bağlantı kontrol edilmedi</strong><p id="usbDetails">Cihazını uygun bir veri kablosuyla bağla. Sonuç, tarayıcı ve cihaz desteğine bağlıdır.</p></div></div>
+      <div class="usb-state">
+        <div class="usb-row"><strong>Tarayıcı USB desteği</strong><span class="dot" id="browserUsbDot"></span></div>
+        <p id="browserUsbText">Tarayıcı özellikleri kontrol ediliyor.</p>
+        <button class="btn wide" id="connectBtn">USB cihaz seçicisini aç</button>
+      </div>
+      <p class="disclaimer">USB seçicisi destekleniyorsa kullanıcı izni ister. Bu özellik iPhone'un bütün donanım bilgilerini, pil sağlığını veya sistem günlüklerini okuyamaz. Eski iPhone modellerinde uyumlu bilgisayar yazılımı gerekebilir.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading"><div><h3>Cihaz rehberi</h3><p>Seçtiğin model için kontrol adımları.</p></div></div>
+      <div class="field"><label for="guideSelect">Rehber seç</label><select id="guideSelect"><option value="iphone-3gs">iPhone 3GS</option></select></div>
+      <button class="btn wide" id="guideBtn">Rehberi görüntüle</button>
+      <div id="guideResult" class="disclaimer">Modeli seçip rehberi açabilirsin.</div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading"><div><h3>Son raporlar</h3><p>Bu sayfa açıkken oluşturulan raporlar.</p></div><button class="btn small" id="clearHistory">Sil</button></div>
+      <div class="history-list" id="historyList"><div class="result-empty">Henüz rapor yok.</div></div>
+      <p class="disclaimer">Sunucudaki raporlar geçicidir; sunucu yeniden başlatılırsa kaybolabilir.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading"><div><h3>Güvenli onarım ilkeleri</h3></div><span class="tag">GÜVENLİK</span></div>
+      <div class="status-box"><div class="status-symbol">✓</div><div><strong>Önce verilerini koru</strong><p>Onarım öncesi önemli dosyalarını yedekle. Fabrika ayarlarına dönmek verileri silebilir.</p></div></div>
+      <div class="status-box"><div class="status-symbol">!</div><div><strong>Fiziksel riskleri önemse</strong><p>Şişmiş pil, yanık kokusu veya aşırı ısınma varsa cihazı kullanmayı ve şarj etmeyi bırak.</p></div></div>
+      <div class="status-box"><div class="status-symbol">⌁</div><div><strong>İzinler senin kontrolünde</strong><p>USB erişimi, cihaz bilgileri ve sistem işlemleri otomatik olarak izinsiz yapılmaz.</p></div></div>
+    </section>
+  </aside>
+</main>
+
+<footer class="footer"><span>© <span id="year"></span> PhoneRescue Ultra · Cihaz destek merkezi</span><span>Belirti tabanlı öneriler · Kesin donanım teşhisi değildir</span><a href="/api/health" target="_blank" rel="noopener">Sunucu sağlık kontrolü ↗</a></footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+const $ = id => document.getElementById(id);
+const state = { devices: [], issues: [], reports: [], selected: new Set(), usbDevice: null };
+const categoryInfo = {
+ battery:{label:'Pil hızlı bitiyor',text:'battery drain pil batarya şarj'},
+ charging:{label:'Şarj olmuyor',text:'charging şarj olmuyor'},
+ overheating:{label:'Cihaz ısınıyor',text:'overheating ısınıyor heat'},
+ slow:{label:'Yavaşlama / donma',text:'slow freeze donma yavaş'},
+ network:{label:'Bağlantı sorunu',text:'network wifi internet şebeke'},
+ screen:{label:'Ekran / dokunmatik',text:'screen display touch ekran'},
+ usb:{label:'USB bağlantısı',text:'usb computer bilgisayar tanımıyor'},
+ boot:{label:'Cihaz açılmıyor',text:'boot start açılmıyor'},
+ audio:{label:'Ses / mikrofon',text:'audio sound speaker ses mikrofon'}
+};
+let toastTimer;
+
+function toast(message, error=false){
+ const el=$('toast');
+ el.textContent=message;
+ el.classList.toggle('error',error);
+ el.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+async function api(url, options={}){
+ const response=await fetch(url,{
+  ...options,
+  headers:{'Accept':'application/json',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}
+ });
+ const type=response.headers.get('content-type')||'';
+ if(!type.includes('application/json')) throw new Error('Sunucu JSON yerine farklı bir yanıt verdi. API yolunu kontrol et.');
+ const data=await response.json();
+ if(!response.ok||data.ok===false) throw new Error(data.error?.message||'İstek başarısız: '+response.status);
+ return data;
+}
+
+function setApiStatus(ok,message){
+ $('apiDot').className='dot '+(ok?'ok':'bad');
+ $('apiStatus').textContent=message;
+ $('serviceState').textContent=ok?'Aktif':'Hata';
+ $('serviceFoot').textContent=ok?'API yanıt veriyor':'Bağlantıyı kontrol et';
+}
+
+async function checkHealth(){
+ try{
+  await api('/api/health');
+  setApiStatus(true,'Sunucu aktif');
+ }catch(e){
+  setApiStatus(false,'Sunucuya ulaşılamıyor');
+ }
+}
+
+function safeText(value){
+ return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fillSelect(select,items,selected){
+ select.replaceChildren();
+ items.forEach(item=>{
+  const option=document.createElement('option');
+  option.value=item.id;
+  option.textContent=item.name;
+  if(item.id===selected) option.selected=true;
+  select.appendChild(option);
+ });
+}
+
+async function loadDevices(){
+ try{
+  const data=await api('/api/v1/devices');
+  state.devices=Array.isArray(data.devices)?data.devices:[];
+  $('deviceCount').textContent=state.devices.length;
+  const options=state.devices.map(d=>({id:d.id,name:d.name+' · '+d.brand}));
+  if(options.length){
+   fillSelect($('deviceSelect'),options,options.some(x=>x.id==='iphone-3gs')?'iphone-3gs':options[0].id);
+   fillSelect($('guideSelect'),options,options.some(x=>x.id==='iphone-3gs')?'iphone-3gs':options[0].id);
+  }
+ }catch(e){
+  $('deviceCount').textContent='—';
+  console.error('Device list:',e);
+ }
+}
+
+async function loadIssues(){
+ try{
+  const data=await api('/api/v1/issues');
+  state.issues=Array.isArray(data.issues)?data.issues:[];
+  $('issueCount').textContent=state.issues.length;
+  renderIssues(state.issues);
+ }catch(e){
+  $('issueList').innerHTML='<div class="result-empty">Sorun kütüphanesi yüklenemedi. Sunucunun güncel sürümünü kontrol et.</div>';
+ }
+}
+
+function renderIssues(items){
+ const container=$('issueList');
+ container.replaceChildren();
+ if(!items.length){
+  container.innerHTML='<div class="result-empty">Eşleşen sorun bulunamadı. Farklı bir kelime dene.</div>';
+  return;
+ }
+ items.forEach(issue=>{
+  const row=document.createElement('div');
+  row.className='issue-row';
+  const icon=document.createElement('div');
+  icon.className='status-symbol';
+  icon.textContent='⌕';
+  const text=document.createElement('div');
+  text.style.flex='1';
+  text.innerHTML='<strong>'+safeText(issue.title)+'</strong><small>'+safeText(issue.severity==='high'?'Öncelikli kontrol':issue.severity==='low'?'Temel kontrol':'Kontrol önerileri')+'</small>';
+  const btn=document.createElement('button');
+  btn.className='btn small';
+  btn.textContent='İncele';
+  btn.addEventListener('click',()=>showIssue(issue));
+  row.append(icon,text,btn);
+  container.appendChild(row);
+ });
+}
+
+function showIssue(issue){
+ $('results').replaceChildren();
+ $('resultSubtitle').textContent='Kütüphaneden seçilen sorun: '+issue.title;
+ const card=document.createElement('article');
+ card.className='issue-card';
+ const severity=issue.severity||'medium';
+ card.innerHTML='<div class="issue-title"><h4>'+safeText(issue.title)+'</h4><span class="severity '+(severity==='high'?'high':severity==='low'?'low':'')+'">'+safeText(severity==='high'?'Öncelikli':severity==='low'?'Düşük risk':'Orta düzey')+'</span></div>';
+ const list=document.createElement('ul');
+ (issue.checks||[]).forEach(check=>{
+  const li=document.createElement('li');
+  li.textContent=check;
+  list.appendChild(li);
+ });
+ card.appendChild(list);
+ $('results').appendChild(card);
+ $('diagnosticPanel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+$('symptomChips').addEventListener('click',e=>{
+ const btn=e.target.closest('[data-symptom]');
+ if(!btn)return;
+ const id=btn.dataset.symptom;
+ if(state.selected.has(id)){
+  state.selected.delete(id);
+  btn.classList.remove('selected');
+ }else{
+  state.selected.add(id);
+  btn.classList.add('selected');
+ }
+});
+
+$('categorySelect').addEventListener('change',e=>{
+ const value=e.target.value;
+ if(value && categoryInfo[value]){
+  state.selected.add(value);
+  document.querySelectorAll('[data-symptom]').forEach(btn=>{
+   btn.classList.toggle('selected',state.selected.has(btn.dataset.symptom));
+  });
+ }
+});
+
+function localAnalyze(text){
+ const q=text.toLocaleLowerCase('tr-TR');
+ return state.issues.filter(issue=>
+  (issue.keywords||[]).some(k=>q.includes(String(k).toLocaleLowerCase('tr-TR')))||
+  String(issue.title||'').toLocaleLowerCase('tr-TR').includes(q)
+ );
+}
+
+function renderResults(results,report){
+ const container=$('results');
+ container.replaceChildren();
+ if(!results.length){
+  container.innerHTML='<div class="result-empty"><div class="big">⌕</div><strong>Doğrudan eşleşme bulunamadı</strong><p>Belirtiyi farklı kelimelerle anlatmayı dene. Bu, cihazda sorun olmadığı anlamına gelmez.</p></div>';
+  $('resultSubtitle').textContent='Eşleşme bulunamadı';
+ }else{
+  $('resultSubtitle').textContent=results.length+' olası sorun başlığı bulundu';
+  results.forEach(item=>{
+   const card=document.createElement('article');
+   card.className='issue-card';
+   const severity=item.severity||'medium';
+   card.innerHTML='<div class="issue-title"><h4>'+safeText(item.title)+'</h4><span class="severity '+(severity==='high'?'high':severity==='low'?'low':'')+'">'+safeText(severity==='high'?'Öncelikli':severity==='low'?'Düşük risk':'Kontrol et')+'</span></div>';
+   const list=document.createElement('ul');
+   (item.checks||[]).forEach(check=>{
+    const li=document.createElement('li');
+    li.textContent=check;
+    list.appendChild(li);
+   });
+   card.appendChild(list);
+   container.appendChild(card);
+  });
+ }
+ const note=document.createElement('p');
+ note.className='disclaimer';
+ note.textContent='Rapor: '+(report?.id||'yerel analiz')+'. Bu sonuçlar belirtilere dayalı önerilerdir; fiziksel test yapılmadı.';
+ container.appendChild(note);
+}
+
+$('diagnoseForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const btn=$('analyzeBtn');
+ const manual=$('symptomsInput').value.trim();
+ const observation=$('observationsInput').value.trim();
+ const category=$('categorySelect').value;
+ const selected=[...state.selected].map(id=>categoryInfo[id]?.text||id);
+ if(category && !selected.includes(categoryInfo[category]?.text))selected.push(categoryInfo[category].text);
+ const symptoms=[...selected,manual].filter(Boolean).join('; ');
+ if(!symptoms && !observation){
+  toast('Önce bir belirti seç veya açıklama yaz.',true);
+  return;
+ }
+ btn.disabled=true;
+ btn.textContent='Analiz ediliyor…';
+ try{
+  const data=await api('/api/v1/diagnose',{
+   method:'POST',
+   body:JSON.stringify({
+    deviceId:$('deviceSelect').value,
+    symptoms,
+    observations:observation
+   })
+  });
+  const report=data.report;
+  state.reports.unshift(report);
+  state.reports=state.reports.slice(0,20);
+  $('reportCount').textContent=state.reports.length;
+  renderHistory();
+  renderResults(report.results||[],report);
+  toast('Analiz raporu oluşturuldu.');
+ }catch(error){
+  // Keep the interface useful when the API is unavailable.
+  const combined=[...selected,manual,observation].filter(Boolean).join(' ');
+  const local=localAnalyze(combined);
+  renderResults(local.map(i=>({...i,confidence:'local-keyword-match'})),null);
+  toast('Sunucu analizi yapılamadı. Yerel eşleştirme gösteriliyor: '+error.message,true);
+ }finally{
+  btn.disabled=false;
+  btn.textContent='✦ Analizi başlat';
+ }
+});
+
+$('clearResults').addEventListener('click',()=>{
+ $('results').innerHTML='<div class="result-empty"><div class="big">⌁</div><strong>Analiz alanı temizlendi</strong><p>Yeni bir analiz başlatabilirsin.</p></div>';
+ $('resultSubtitle').textContent='Henüz bir analiz yapılmadı.';
+});
+
+function renderHistory(){
+ const container=$('historyList');
+ container.replaceChildren();
+ $('reportCount').textContent=state.reports.length;
+ if(!state.reports.length){
+  container.innerHTML='<div class="result-empty">Henüz rapor yok.</div>';
+  return;
+ }
+ state.reports.forEach(report=>{
+  const item=document.createElement('div');
+  item.className='history-item';
+  const text=document.createElement('div');
+  text.className='history-text';
+  const date=report.createdAt?new Date(report.createdAt).toLocaleString('tr-TR'):'Bu oturum';
+  text.innerHTML='<strong>'+safeText(report.device?.name||'Cihaz raporu')+'</strong><small>'+safeText(date)+'</small>';
+  const btn=document.createElement('button');
+  btn.className='btn small';
+  btn.textContent='Aç';
+  btn.addEventListener('click',()=>{
+   renderResults(report.results||[],report);
+   $('diagnosticPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  item.append(text,btn);
+  container.appendChild(item);
+ });
+}
+
+$('clearHistory').addEventListener('click',()=>{
+ state.reports=[];
+ renderHistory();
+ toast('Bu oturumdaki rapor listesi temizlendi.');
+});
+
+async function searchIssues(){
+ const q=$('searchInput').value.trim();
+ if(!q){renderIssues(state.issues);return;}
+ try{
+  const data=await api('/api/v1/search?q='+encodeURIComponent(q));
+  renderIssues(data.results||[]);
+ }catch(e){
+  const local=state.issues.filter(i=>
+   i.title.toLocaleLowerCase('tr-TR').includes(q.toLocaleLowerCase('tr-TR'))||
+   (i.keywords||[]).some(k=>k.toLocaleLowerCase('tr-TR').includes(q.toLocaleLowerCase('tr-TR')))
+  );
+  renderIssues(local);
+  toast('Sunucu araması kullanılamadı; mevcut katalogda arandı.',true);
+ }
+}
+
+$('searchBtn').addEventListener('click',searchIssues);
+$('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchIssues();}});
+$('browseBtn').addEventListener('click',()=>$('libraryPanel').scrollIntoView({behavior:'smooth'}));
+$('startBtn').addEventListener('click',()=>$('diagnosticPanel').scrollIntoView({behavior:'smooth'}));
+$('refreshBtn').addEventListener('click',async()=>{
+ await Promise.all([checkHealth(),loadDevices(),loadIssues()]);
+ toast('Sunucu ve katalog kontrolü tamamlandı.');
+});
+
+async function showGuide(){
+ const id=$('guideSelect').value;
+ $('guideResult').textContent='Rehber yükleniyor…';
+ try{
+  const data=await api('/api/v1/guides/'+encodeURIComponent(id));
+  const guide=data;
+  const wrap=document.createElement('div');
+  wrap.style.marginTop='14px';
+  const title=document.createElement('strong');
+  title.textContent=guide.device?.name||'Cihaz rehberi';
+  wrap.appendChild(title);
+  const intro=document.createElement('p');
+  intro.textContent='Bağlantı profili: '+(guide.device?.usbSupport||'bilinmiyor');
+  intro.style.color='var(--muted)';
+  wrap.appendChild(intro);
+  (guide.issues||[]).forEach(issue=>{
+   const btn=document.createElement('button');
+   btn.className='chip';
+   btn.style.margin='3px';
+   btn.textContent=issue.title;
+   btn.addEventListener('click',()=>showIssue(issue));
+   wrap.appendChild(btn);
+  });
+  const notes=document.createElement('p');
+  notes.className='disclaimer';
+  notes.textContent=(guide.usbNotes||[]).join(' ');
+  wrap.appendChild(notes);
+  $('guideResult').replaceChildren(wrap);
+ }catch(e){
+  $('guideResult').textContent='Rehber alınamadı: '+e.message;
+ }
+}
+$('guideBtn').addEventListener('click',showGuide);
+
+function updateBrowserUsb(){
+ const supported=!!(navigator.usb&&navigator.usb.requestDevice);
+ $('browserUsbDot').className='dot '+(supported?'ok':'');
+ $('browserUsbText').textContent=supported
+  ?'WebUSB API mevcut. Cihaz listesi, tarayıcı desteğine ve izinlere bağlıdır.'
+  :'Bu tarayıcıda WebUSB kullanılamıyor. Chrome tabanlı masaüstü tarayıcı ve güvenli HTTPS bağlantısı gerekebilir.';
+}
+
+async function connectUsb(){
+ if(!navigator.usb||!navigator.usb.requestDevice){
+  $('usbTitle').textContent='WebUSB desteklenmiyor';
+  $('usbDetails').textContent='Bu tarayıcı USB cihaz seçicisini desteklemiyor. Uyumlu masaüstü tarayıcıda HTTPS üzerinden deneyebilirsin.';
+  $('usbDot').className='dot bad';
+  toast('Tarayıcı WebUSB özelliğini desteklemiyor.',true);
+  return;
+ }
+ try{
+  const device=await navigator.usb.requestDevice({filters:[]});
+  state.usbDevice=device;
+  $('usbTitle').textContent='Bir USB cihazı seçildi';
+  $('usbDetails').textContent='Cihaz adı: '+(device.productName||'Ad bilgisi yok')+'. Üretici: '+(device.manufacturerName||'Bilinmiyor')+'. Bu, tam donanım teşhisi anlamına gelmez.';
+  $('usbSummary').textContent='Tarayıcıda bir USB cihazı seçildi.';
+  $('usbDot').className='dot ok';
+  toast('USB cihaz seçildi. Donanım teşhisi ayrıca destek gerektirir.');
+ }catch(e){
+  if(e.name==='NotFoundError'){
+   toast('USB cihaz seçimi iptal edildi.');
+  }else{
+   toast('USB erişimi alınamadı: '+e.message,true);
+  }
+ }
+}
+
+$('connectBtn').addEventListener('click',connectUsb);
+$('usbBtn').addEventListener('click',connectUsb);
+if(navigator.usb&&navigator.usb.addEventListener){
+ navigator.usb.addEventListener('disconnect',event=>{
+  if(state.usbDevice&&event.device===state.usbDevice){
+   state.usbDevice=null;
+   $('usbTitle').textContent='USB bağlantısı kesildi';
+   $('usbDetails').textContent='Cihaz bağlantısı sona erdi.';
+   $('usbSummary').textContent='USB bağlantısı kesildi.';
+   $('usbDot').className='dot';
+  }
+ });
+}
+
+$('year').textContent=new Date().getFullYear();
+updateBrowserUsb();
+renderHistory();
+checkHealth();
+loadDevices();
+loadIssues();
+</script>
+</body>
+</html>
