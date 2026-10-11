@@ -1,0 +1,22 @@
+
+{
+  "name": "phonerescue-ultra",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PhoneRescue Ultra - Multi-brand phone diagnostics and recovery assistant",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.0"
+  }
+}
